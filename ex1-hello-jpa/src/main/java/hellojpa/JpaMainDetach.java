@@ -20,7 +20,7 @@ public class JpaMainDetach
         try
         {
             Member member = manager.find(Member.class, 100L);
-            member.setName("영속상태");
+            //member.setName("영속상태");
 
             // member 엔티티만 준영속 상태로 지정
             manager.detach(member);

@@ -19,6 +19,8 @@
             <property name="hibernate.use_sql_comments" value="true"/>
             <!-- Batch 처리 사이즈(value 만큼 쌓이면 한 번에 SQL문을 수행시키고 commit) -->
             <!-- <property name="hibernate.jdbc.batch_size" value="10"/> -->
+            <!-- 스키마 자동 생성 -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
         </properties>
         
     </persistence-unit>

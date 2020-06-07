@@ -20,7 +20,7 @@ public class JpaMainFlush
         {
             Member member = new Member();
             member.setId(200L);
-            member.setName("flushTest");
+            //member.setName("flushTest");
 
             manager.persist(member);
 

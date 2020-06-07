@@ -46,11 +46,12 @@ public class JpaMain
             entityManager.remove(member);
             */
 
-            // 검색 쿼리를 위한 쿼리 작성 가능 (조회 대상은 테이블이 아닌 엔티티 객체임!!) => JPQL
+            /* 검색 쿼리를 위한 쿼리 작성 가능 (조회 대상은 테이블이 아닌 엔티티 객체임!!) => JPQL
             List<Member> list = entityManager.createQuery("SELECT m FROM Member as m", Member.class)
                                     .setFirstResult(0)      // 0번째 데이터 부터
                                     .setMaxResults(100)     // 100개 데이터를 가져와
                                     .getResultList();
+            */
 
             // 트랜잭션 커밋
             transaction.commit();
