@@ -14,6 +14,7 @@ public class Order
     @Column(name = "ORDER_ID")
     private Long id;
 
+    // 객체지향적이지 않은 설계
     @Column(name = "MEMBER_ID")
     private Long memberId;
 
