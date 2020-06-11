@@ -53,6 +53,38 @@ public class JpaMain
                                     .getResultList();
             */
 
+            /*
+            단방향 연관관계
+            Team team = new Team();
+            team.setName("TeamA");
+            entityManager.persist(team);
+
+            Member member = new Member();
+            member.setUserName("팀유저1");
+            member.setTeam(team);
+            entityManager.persist(member);
+
+            Team findTeam = entityManager.find(Member.class, member.getId()).getTeam();
+            System.out.println(findTeam.getName());
+            */
+
+            Team team = entityManager.find(Team.class, 1L);
+
+            Member member = new Member();
+            member.setUserName("팀유저3");
+            member.changeTeam(team);
+            entityManager.persist(member);
+
+            entityManager.flush();
+            entityManager.clear();
+
+            Member findMember = entityManager.find(Member.class, member.getId());
+            List<Member> members = findMember.getTeam().getMembers();
+            for (Member mem : members)
+            {
+                System.out.println(mem.getUserName());
+            }
+
             // 트랜잭션 커밋
             transaction.commit();
         }

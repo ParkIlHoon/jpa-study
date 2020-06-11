@@ -37,6 +37,10 @@ public class Member
     @Lob
     private String description;
 
+    @ManyToOne
+    @JoinColumn(name = "TEAM_ID")
+    private Team team;
+
     /**
      * 실제 DB 컬럼과 매핑하지 않고 인메모리에서만 사용할 필드
      */
@@ -101,5 +105,39 @@ public class Member
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDate getLocalDate() {
+        return localDate;
+    }
+
+    public void setLocalDate(LocalDate localDate) {
+        this.localDate = localDate;
+    }
+
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
+    }
+
+    public void setLocalDateTime(LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    // 연관관계 편의 메서드 (중요!!!)
+    public void changeTeam(Team team) {
+        this.team = team;
+        team.getMembers().add(this);
+    }
+
+    public String getTemp() {
+        return temp;
+    }
+
+    public void setTemp(String temp) {
+        this.temp = temp;
     }
 }
