@@ -1,5 +1,8 @@
 package jpashop.jpamain;
 
+import jpashop.domain.Order;
+import jpashop.domain.OrderItem;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -16,6 +19,13 @@ public class JpaMain
         // 트랜잭션 생성 및 시작 (모든 데이터 변경은 트랜잭션 안에서 실행)
         EntityTransaction transaction = entityManager.getTransaction();
 
+
+        Order order = new Order();
+        entityManager.persist(order);
+        OrderItem orderItem = new OrderItem();
+
+        orderItem.setOrder(order);
+        entityManager.persist(orderItem);
 
         transaction.begin();
 
