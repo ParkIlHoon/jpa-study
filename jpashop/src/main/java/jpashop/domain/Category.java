@@ -1,11 +1,14 @@
 package jpashop.domain;
 
+import jpashop.layer.BaseEntity;
+import jpashop.layer.Item;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Category
+public class Category extends BaseEntity
 {
     @Id
     @GeneratedValue

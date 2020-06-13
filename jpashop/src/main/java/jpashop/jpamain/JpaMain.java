@@ -1,5 +1,6 @@
 package jpashop.jpamain;
 
+import jpashop.domain.Book;
 import jpashop.domain.Order;
 import jpashop.domain.OrderItem;
 

@@ -1,9 +1,12 @@
 package jpashop.domain;
 
+import jpashop.layer.BaseEntity;
+import jpashop.layer.Item;
+
 import javax.persistence.*;
 
 @Entity
-public class OrderItem
+public class OrderItem extends BaseEntity
 {
     @Id
     @GeneratedValue

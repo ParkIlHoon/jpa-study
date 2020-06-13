@@ -1,11 +1,12 @@
 package jpashop.domain;
 
 import jpashop.enums.DeliveryStatus;
+import jpashop.layer.BaseEntity;
 
 import javax.persistence.*;
 
 @Entity
-public class Deivery
+public class Deivery extends BaseEntity
 {
     @Id
     @GeneratedValue

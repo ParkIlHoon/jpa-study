@@ -1,6 +1,7 @@
 package jpashop.domain;
 
 import jpashop.enums.OrderStatus;
+import jpashop.layer.BaseEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -9,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "ORDERS")
-public class Order
+public class Order extends BaseEntity
 {
     @Id
     @GeneratedValue
