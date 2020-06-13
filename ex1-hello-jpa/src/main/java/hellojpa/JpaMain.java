@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class JpaMain
@@ -87,7 +88,8 @@ public class JpaMain
                 System.out.println(mem.getUserName());
             }
             */
-            
+
+            /*
             Movie movie = new Movie();
             movie.setActor("서현진");
             movie.setDirector("봉준호");
@@ -108,6 +110,13 @@ public class JpaMain
             entityManager.persist(movie);
             entityManager.persist(album);
             entityManager.persist(book);
+            */
+
+            Member member = new Member();
+            member.setUserName("testUser");
+            member.setCreatedDate(LocalDateTime.now());
+
+            entityManager.persist(member);
 
 //            entityManager.flush();
 //            entityManager.clear();
