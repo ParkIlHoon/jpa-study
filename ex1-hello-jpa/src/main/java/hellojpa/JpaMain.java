@@ -67,7 +67,9 @@ public class JpaMain
             Team findTeam = entityManager.find(Member.class, member.getId()).getTeam();
             System.out.println(findTeam.getName());
             */
-
+            
+            /*
+            양방향 연관관계
             Team team = entityManager.find(Team.class, 1L);
 
             Member member = new Member();
@@ -84,6 +86,33 @@ public class JpaMain
             {
                 System.out.println(mem.getUserName());
             }
+            */
+            
+            Movie movie = new Movie();
+            movie.setActor("서현진");
+            movie.setDirector("봉준호");
+            movie.setName("띵작4");
+            movie.setPrice(10000);
+            
+            Album album = new Album();
+            album.setArtist("서현진");
+            album.setName("띵곡");
+            album.setPrice(8000);
+            
+            Book book = new Book();
+            book.setAuthor("서현진");
+            book.setIsbn("1231213");
+            book.setName("띵서");
+            book.setPrice(8500);
+            
+            entityManager.persist(movie);
+            entityManager.persist(album);
+            entityManager.persist(book);
+
+//            entityManager.flush();
+//            entityManager.clear();
+//
+//            Movie findMovie = entityManager.find(Movie.class, movie.getId());
 
             // 트랜잭션 커밋
             transaction.commit();
