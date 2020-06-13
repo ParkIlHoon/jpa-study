@@ -31,14 +31,14 @@ public class Order
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    @OneToOne
+    @JoinColumn(name = "DELIVERY_ID")
+    private Deivery deivery;
 
-    public void addOrderItem (OrderItem item)
-    {
+    public void addOrderItem (OrderItem item) {
         orderItems.add(item);
         item.setOrder(this);
     }
-
-
 
     public Long getId() {
         return id;
@@ -78,5 +78,13 @@ public class Order
 
     public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
+    }
+
+    public Deivery getDeivery() {
+        return deivery;
+    }
+
+    public void setDeivery(Deivery deivery) {
+        this.deivery = deivery;
     }
 }

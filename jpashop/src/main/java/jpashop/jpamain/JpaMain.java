@@ -20,13 +20,6 @@ public class JpaMain
         EntityTransaction transaction = entityManager.getTransaction();
 
 
-        Order order = new Order();
-        entityManager.persist(order);
-        OrderItem orderItem = new OrderItem();
-
-        orderItem.setOrder(order);
-        entityManager.persist(orderItem);
-
         transaction.begin();
 
         try
