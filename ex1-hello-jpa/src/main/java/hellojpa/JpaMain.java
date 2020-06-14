@@ -127,6 +127,8 @@ public class JpaMain
 //            Movie findMovie = entityManager.find(Movie.class, movie.getId());
             */
 
+            /*
+            프록시
             // SELECT 쿼리 수행 안됨
             Member refMember = entityManager.getReference(Member.class, 1L);
             
@@ -160,6 +162,18 @@ public class JpaMain
             Member refMember3 = entityManager.getReference(Member.class, 200L);
             entityManager.detach(refMember3);
             refMember3.getUserName();
+            */
+
+            /*
+            LAZY LOADING
+            Member member = entityManager.find(Member.class, 1L);
+            System.out.println(member.getClass() == Member.class);
+            System.out.println(member instanceof Member);
+            System.out.println(member.getTeam().getClass());
+
+            System.out.println(member.getTeam().getName());
+            System.out.println(member.getTeam().getClass());
+             */
 
             // 트랜잭션 커밋
             transaction.commit();
