@@ -1,5 +1,7 @@
 package hellojpa;
 
+import javassist.expr.Instanceof;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -112,6 +114,7 @@ public class JpaMain
             entityManager.persist(book);
             */
 
+            /*
             Member member = new Member();
             member.setUserName("testUser");
             member.setCreatedDate(LocalDateTime.now());
@@ -122,12 +125,48 @@ public class JpaMain
 //            entityManager.clear();
 //
 //            Movie findMovie = entityManager.find(Movie.class, movie.getId());
+            */
+
+            // SELECT 쿼리 수행 안됨
+            Member refMember = entityManager.getReference(Member.class, 1L);
+            
+            // SELECT 쿼리 수행됨
+            System.out.println(refMember.getUserName());
+
+            // Member 타입이 아님 Proxy임
+            System.out.println(refMember.getClass() == Member.class);
+            System.out.println(refMember instanceof Member);
+
+            // find시에는 Member 타입
+            Member member = entityManager.find(Member.class, 2L);
+            System.out.println(member.getClass() == Member.class);
+            System.out.println(member instanceof Member);
+
+            // 이미 영속성 컨텍스트에 존재하는 엔티티는 Member 타입으로 반환
+            Member againMember = entityManager.getReference(Member.class, 2L);
+            System.out.println(againMember.getClass() == Member.class);
+            System.out.println(againMember instanceof Member);
+
+            // 이렇게 하면 둘 다 Proxy로 반환됨
+            Member refMember2 = entityManager.getReference(Member.class, 100L);
+            System.out.println(refMember2.getClass() == Member.class);
+            System.out.println(refMember2 instanceof Member);
+            Member findMember = entityManager.find(Member.class, 100L);
+            System.out.println(findMember.getClass() == Member.class);
+            System.out.println(findMember instanceof Member);
+
+
+            // 준영속 상태의 엔티티 대상으로 프록시 초기화 시 org.hibernate.LazyInitializationException 발생
+            Member refMember3 = entityManager.getReference(Member.class, 200L);
+            entityManager.detach(refMember3);
+            refMember3.getUserName();
 
             // 트랜잭션 커밋
             transaction.commit();
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             // 트랜잭션 롤백
             transaction.rollback();
         }
