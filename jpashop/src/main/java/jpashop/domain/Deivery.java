@@ -12,7 +12,7 @@ public class Deivery extends BaseEntity
     @GeneratedValue
     private Long id;
 
-    @OneToOne(mappedBy = "deivery")
+    @OneToOne(mappedBy = "deivery", fetch = FetchType.LAZY)
     private Order order;
 
     private String city;
