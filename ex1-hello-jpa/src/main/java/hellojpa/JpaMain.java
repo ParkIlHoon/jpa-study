@@ -175,6 +175,18 @@ public class JpaMain
             System.out.println(member.getTeam().getClass());
              */
 
+            Child child1 = new Child();
+            Child child2 = new Child();
+
+            Parent parent = new Parent();
+            parent.addChild(child1);
+            parent.addChild(child2);
+
+            // 원래는 3번 persist 해야해
+            entityManager.persist(parent);
+            //entityManager.persist(child1);
+            //entityManager.persist(child2);
+
             // 트랜잭션 커밋
             transaction.commit();
         }
