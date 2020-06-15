@@ -175,6 +175,7 @@ public class JpaMain
             System.out.println(member.getTeam().getClass());
              */
 
+            /*
             Child child1 = new Child();
             Child child2 = new Child();
 
@@ -186,7 +187,40 @@ public class JpaMain
             entityManager.persist(parent);
             //entityManager.persist(child1);
             //entityManager.persist(child2);
+            */
 
+            /*
+            Address address = new Address("zipcode", "city", "street");
+
+            Member member = entityManager.find(Member.class, 1L);
+            member.setAddress(address);
+            */
+
+            Member member = new Member();
+            member.setUserName("test");
+            member.setAddress(new Address("zipcode","city","street"));
+
+            member.getFavoriteFoods().add("치킨");
+            member.getFavoriteFoods().add("족발");
+            member.getFavoriteFoods().add("피자");
+            
+            member.getAddressHistory().add(new Address("12345","oldcity","oldstreet"));
+            member.getAddressHistory().add(new Address("67890","newcity","newstreet"));
+
+            entityManager.persist(member);
+
+            // 주소 변경
+            member.setAddress(new Address("zipcode2","city2","street2"));
+            
+            // 치킨 -> 곱창
+            member.getFavoriteFoods().remove("치킨");
+            member.getFavoriteFoods().add("곱창");
+
+            // 값 타입 제거
+            // 선행조건 : 값 타입 객체의 equals가 정확하게 구현되어있어야함
+            member.getAddressHistory().remove(new Address("12345","oldcity","oldstreet"));
+            member.getAddressHistory().add(new Address("00000","oldcity","oldstreet"));
+            
             // 트랜잭션 커밋
             transaction.commit();
         }

@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.*;
 
 @Entity
 //@Table(name = "MBR", schema = "dbo")
@@ -34,6 +34,29 @@ public class Member extends BaseEntity
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEAM_ID")
     private Team team;
+
+    // 즉시 로딩
+    @Embedded
+    private Period period;
+
+    // 즉시 로딩
+    @Embedded
+    private Address address;
+
+    // 지연 로딩
+    @ElementCollection
+    @CollectionTable(name = "FAVORITE_FOOD", joinColumns = {
+            @JoinColumn(name = "id")
+    })
+    @Column(name = "FOOD_NAME")
+    private Set<String> favoriteFoods = new HashSet<>();
+
+    // 지연 로딩
+    @ElementCollection
+    @CollectionTable(name = "ADDRESS_HISTORY", joinColumns = {
+            @JoinColumn(name = "id")
+    })
+    private List<Address> addressHistory = new ArrayList<>();
 
     /**
      * 실제 DB 컬럼과 매핑하지 않고 인메모리에서만 사용할 필드
@@ -117,5 +140,41 @@ public class Member extends BaseEntity
 
     public void setTemp(String temp) {
         this.temp = temp;
+    }
+
+    public Period getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(Period period) {
+        this.period = period;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    public Set<String> getFavoriteFoods() {
+        return favoriteFoods;
+    }
+
+    public void setFavoriteFoods(Set<String> favoriteFoods) {
+        this.favoriteFoods = favoriteFoods;
+    }
+
+    public List<Address> getAddressHistory() {
+        return addressHistory;
+    }
+
+    public void setAddressHistory(List<Address> addressHistory) {
+        this.addressHistory = addressHistory;
     }
 }
