@@ -1,8 +1,6 @@
 package jpashop.jpamain;
 
-import jpashop.domain.Book;
-import jpashop.domain.Order;
-import jpashop.domain.OrderItem;
+import jpashop.domain.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -20,6 +18,9 @@ public class JpaMain
         // 트랜잭션 생성 및 시작 (모든 데이터 변경은 트랜잭션 안에서 실행)
         EntityTransaction transaction = entityManager.getTransaction();
 
+        Member member = new Member();
+        member.setName("값타입멤버");
+        member.setAddress(new Address("city","street","zipcode"));
 
         transaction.begin();
 
