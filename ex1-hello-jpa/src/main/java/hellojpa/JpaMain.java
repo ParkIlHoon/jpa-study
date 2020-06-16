@@ -6,6 +6,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -196,6 +199,7 @@ public class JpaMain
             member.setAddress(address);
             */
 
+            /*
             Member member = new Member();
             member.setUserName("test");
             member.setAddress(new Address("zipcode","city","street"));
@@ -220,7 +224,22 @@ public class JpaMain
             // 선행조건 : 값 타입 객체의 equals가 정확하게 구현되어있어야함
             member.getAddressHistory().remove(new Address("12345","oldcity","oldstreet"));
             member.getAddressHistory().add(new Address("00000","oldcity","oldstreet"));
-            
+            */
+
+            /*
+            JPQL - Criteria
+            List<Member> members = entityManager.createQuery("SELECT m FROM Member m WHERE m.userName like '%test%'", Member.class).getResultList();
+
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Member> query = criteriaBuilder.createQuery(Member.class);
+
+            Root<Member> memberRoot = query.from(Member.class);
+
+            CriteriaQuery<Member> findQuery = query.select(memberRoot).where(criteriaBuilder.equal(memberRoot.get("userName"), "test"));
+            List<Member> memberList = entityManager.createQuery(findQuery).getResultList();
+             */
+
+
             // 트랜잭션 커밋
             transaction.commit();
         }
