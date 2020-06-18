@@ -2,6 +2,7 @@ package main;
 
 import entities.Member;
 import entities.Team;
+import types.MemberType;
 
 import javax.persistence.*;
 import java.util.List;
@@ -75,6 +76,7 @@ public class JpaMain
             }
             */
 
+
             Team team = new Team();
             team.setName("team");
             entityManager.persist(team);
@@ -83,16 +85,72 @@ public class JpaMain
             member.setUsername("testMember");
             member.setAge(10);
             member.setTeam(team);
+            member.setType(MemberType.ADMIN);
 
             entityManager.persist(member);
 
+            Member member2 = new Member();
+            member2.setUsername("하이");
+            entityManager.persist(member2);
+
             entityManager.flush();
             entityManager.clear();
-
+            /*
+            조인
             String query = "select m from Member m left join m.team t on t.name = :name";
             List<Member> members = entityManager.createQuery(query, Member.class)
                                         .setParameter("name", "team")
                                         .getResultList();
+
+            for (Member mem : members)
+            {
+                System.out.println(mem.toString());
+            }
+            */
+
+            /*
+            타입
+            String query = "select m from Member m where m.type = types.MemberType.ADMIN";
+            List<Member> members = entityManager.createQuery(query, Member.class)
+                    .getResultList();
+            */
+
+            /*
+            String query =   "select case when m.age <= 10 then '학생요금'"
+                           + "            when m.age >= 60 then '경로요금'"
+                           + "            else '일반요금'"
+                           + "       end"
+                           + "  from Member m";
+            List<String> resultList = entityManager.createQuery(query, String.class).getResultList();
+
+            for (String result : resultList)
+            {
+                System.out.println(result);
+            }
+            */
+
+            /*
+            String query = "select coalesce(m.username, '이름 없는 회원') from Member m";
+            List<String> resultList = entityManager.createQuery(query, String.class).getResultList();
+
+            for (String result : resultList)
+            {
+                System.out.println(result);
+            }
+            */
+
+            /*
+            String query = "select nullif(m.username, 'testMember') from Member m";
+            List<String> resultList = entityManager.createQuery(query, String.class).getResultList();
+
+            for (String result : resultList)
+            {
+                System.out.println(result);
+            }
+             */
+
+
+
 
             // 트랜잭션 커밋
             transaction.commit();
