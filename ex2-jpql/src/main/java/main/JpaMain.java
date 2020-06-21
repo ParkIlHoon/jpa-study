@@ -211,6 +211,7 @@ public class JpaMain
 			/*
 			* SQL의 DISTINCT + 애플리케이션의 DISTINCT
 			*/
+			/*
 			String query = "select distinct t from Team t join fetch t.members";
 			List<Team> teamList = entityManager.createQuery(query, Team.class).getResultList();
 
@@ -219,6 +220,42 @@ public class JpaMain
 				System.out.println(t.toString());
 				System.out.println(t.getMembers().size());
 			}
+			 */
+
+			/*
+			* 엔티티 직접 사용
+			*/
+			/*
+			String query = "select m from Member m where m = :member";
+			List<Member> memberList = entityManager.createQuery(query, Member.class)
+											.setParameter("member", member)
+											.getResultList();
+
+			for (Member m : memberList)
+			{
+				System.out.println(m.toString());
+			}
+			*/
+
+			/*
+			Named Query
+			List<Member> memberList = entityManager.createNamedQuery("Member.findByUsername", Member.class)
+										.setParameter("username", "회원1")
+										.getResultList();
+			for (Member m : memberList)
+			{
+				System.out.println(m.toString());
+			}
+			*/
+
+			String query =  "update Member m" +
+							"   set m.age = 20" +
+							" where m.id = :id";
+			
+			// flush 자동 호출
+			entityManager.createQuery(query).setParameter("id", 1L).executeUpdate();
+			// 영속성 컨텍스트 초기화 필요!
+			entityManager.clear();
 
 			// 트랜잭션 커밋
 			transaction.commit();
