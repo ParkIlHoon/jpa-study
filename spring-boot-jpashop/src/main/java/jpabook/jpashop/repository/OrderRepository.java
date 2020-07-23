@@ -1,6 +1,7 @@
 package jpabook.jpashop.repository;
 
 import jpabook.jpashop.domain.Order;
+import jpabook.jpashop.domain.OrderSearch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,5 +37,6 @@ public class OrderRepository
 
 //	public List<Order> findAll(OrderSearch orderSearch)
 //	{
+//
 //	}
 }
