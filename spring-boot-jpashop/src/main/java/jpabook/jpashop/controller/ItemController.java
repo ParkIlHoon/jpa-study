@@ -70,6 +70,8 @@ public class ItemController
 	@PostMapping("/items/{itemId}/edit")
 	public String updateItem(@PathVariable("itemId") Long itemId, @ModelAttribute("form") BookForm bookForm)
 	{
+		/*
+		 * merge 방식
 		Book book = new Book();
 		book.setId(bookForm.getId());
 		book.setAuthor(bookForm.getAuthor());
@@ -79,6 +81,14 @@ public class ItemController
 		book.setStockQuantity(bookForm.getStockQuantity());
 
 		itemService.saveItem(book);
+		*/
+
+		/*
+		 * 변경 감지 방식
+		 * DTO를 사용해도 괜찮아!
+		 */
+		itemService.updateItem(itemId, bookForm.getName(), bookForm.getPrice(), bookForm.getStockQuantity());
+
 		return "redirect:/items";
 	}
 }

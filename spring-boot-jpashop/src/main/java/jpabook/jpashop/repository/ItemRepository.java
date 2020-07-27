@@ -14,7 +14,10 @@ public class ItemRepository
 	private final EntityManager entityManager;
 
 	/**
-	 * 상품을 저장한다. 
+	 * 상품을 저장한다.
+	 * merge 방식
+	 * 단점 : 엔티티의 모든 필드가 override 되어 update 된다. -> 의도치 않게 변경하지 않을 필드가 null로 변경될 수 있음.
+	 * 변경감지 방식을 사용하는 것이 안전함.
 	 * @param item 저장할 상품
 	 */
 	public void save(Item item)
