@@ -62,7 +62,11 @@ public class OrderService
 		order.cancel();
 	}
 
-
+	/**
+	 * 주문 내역 조회
+	 * @param orderSearch
+	 * @return
+	 */
 	public List<Order> findOrders(OrderSearch orderSearch)
 	{
 		return orderRepository.findAllByCriteria(orderSearch);
