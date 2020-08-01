@@ -1,16 +1,12 @@
 package jpabook.jpashop.api;
 
-import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderSearch;
-import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,22 +65,15 @@ public class OrderSimpleApiController
         return collect;
     }
 
-    @Data
-    static class SimpleOrderDto
+    /**
+     * Repository 에서 데이터 조회 시 바로 DTO 형태로 바꿔서 조회해옴.
+     * 이 클래스의 코드는 간단해지나, 결국 같은 역할의 코드가 Repository 로 옮겨진것 뿐이기 때문에 재사용성은 떨어짐.
+     * 성능은 V3보다 미세하게 좋음
+     * @return
+     */
+    @GetMapping("/api/v4/simple-orders")
+    public List<SimpleOrderDto> ordersV4()
     {
-        private Long orderId;
-        private String name;
-        private LocalDateTime orderDate;
-        private OrderStatus orderStatus;
-        private Address address;
-
-        public SimpleOrderDto(Order order)
-        {
-            this.orderId = order.getId();
-            this.name = order.getMember().getName();    // Lazy 초기화
-            this.orderDate = order.getOrderDate();
-            this.orderStatus = order.getStatus();
-            this.address = order.getDelivery().getAddress();    // Lazy 초기화
-        }
+        return orderRepository.findOrderDtos();
     }
 }

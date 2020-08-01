@@ -1,5 +1,6 @@
 package jpabook.jpashop.repository;
 
+import jpabook.jpashop.api.SimpleOrderDto;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderSearch;
@@ -77,4 +78,18 @@ public class OrderRepository
 						" join fetch o.delivery d", Order.class
 		).getResultList();
     }
+
+	/**
+	 * DTO 로 데이터를 조회한다.
+	 * @return
+	 */
+	public List<SimpleOrderDto> findOrderDtos()
+	{
+		return entityManager.createQuery(
+				"select new jpabook.jpashop.api.SimpleOrderDto(o.id, m.name, o.orderDate, o.status, d.address)" +
+						" from Order o" +
+						" join o.member m" +
+						" join o.delivery d", SimpleOrderDto.class
+		).getResultList();
+	}
 }
