@@ -64,4 +64,17 @@ public class OrderRepository
 		TypedQuery<Order> query = entityManager.createQuery(cq).setMaxResults(1000); //최대 1000건
 		return query.getResultList();
 	}
+
+	/**
+	 * 패치 조인으로 Order+Member+Delivery 를 조회한다.
+	 * @return
+	 */
+    public List<Order> findAllWithMemberDelivery()
+	{
+		return entityManager.createQuery(
+				"select o from Order o" +
+						" join fetch o.member m" +
+						" join fetch o.delivery d", Order.class
+		).getResultList();
+    }
 }

@@ -55,6 +55,20 @@ public class OrderSimpleApiController
         return collect;
     }
 
+    /**
+     * 패치 조인을 사용한 방식. Order 조회 시, Member, Delivery 를 한 번에 가져와 SELECT 쿼리가 총 1회 수행됨.
+     * @return
+     */
+    @GetMapping("/api/v3/simple-orders")
+    public List<SimpleOrderDto> ordersV3()
+    {
+        List<Order> orders = orderRepository.findAllWithMemberDelivery();
+        List<SimpleOrderDto> collect = orders.stream()
+                                            .map(o -> new SimpleOrderDto(o))
+                                            .collect(Collectors.toList());
+        return collect;
+    }
+
     @Data
     static class SimpleOrderDto
     {
