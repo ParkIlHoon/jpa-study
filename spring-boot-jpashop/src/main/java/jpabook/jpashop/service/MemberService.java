@@ -1,5 +1,6 @@
 package jpabook.jpashop.service;
 
+import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -84,5 +85,14 @@ public class MemberService
 	public Member findOne(Long memberId)
 	{
 		return memberRepository.findOne(memberId);
+	}
+
+	@Transactional
+	public void update(Long id, String name, Address address)
+	{
+		Member member = memberRepository.findOne(id);
+
+		member.setName(name);
+		member.setAddress(address);
 	}
 }
