@@ -3,11 +3,14 @@ package jpabook.jpashop.api;
 import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.service.MemberService;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -65,7 +68,32 @@ public class MemberApiController
         return new UpdateMemberResponse(one.getId(), one.getName());
     }
 
+    /**
+     * Member 목록을 조회한다.
+     * 1. 불필요한 Member 의 필드들이 노출되는 부작용이 있다.
+     * @return 전체 Member 목록
+     */
+    @GetMapping("/api/v1/members")
+    public List<Member> getMembersV1()
+    {
+        return memberService.findMembers();
+    }
 
+    /**
+     * Member 목록을 조회한다.
+     * @return
+     */
+    @GetMapping("/api/v2/members")
+    public Result getMembersV2()
+    {
+        List<Member> members = memberService.findMembers();
+
+        List<MemberDto> collect = members.stream()
+                                        .map(m -> new MemberDto(m.getName()))
+                                        .collect(Collectors.toList());
+
+        return new Result(collect);
+    }
 
     @Data
     static class CreateMemberResponse
@@ -102,5 +130,19 @@ public class MemberApiController
     {
         private String name;
         private Address address;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T>
+    {
+        private T data;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class MemberDto
+    {
+        private String name;
     }
 }
