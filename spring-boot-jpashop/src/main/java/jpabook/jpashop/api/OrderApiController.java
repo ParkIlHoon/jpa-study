@@ -55,6 +55,23 @@ public class OrderApiController
         return collect;
     }
 
+    /**
+     * 패치 조인으로 쿼리 한 번에 조회하도록 구현
+     * 단점 : 페이징 처리 불가능
+     * @return
+     */
+    @GetMapping("/api/v3/orders")
+    public List<OrderDto> ordersV3()
+    {
+        List<Order> allWithItem = orderRepository.findAllWithItem();
+        List<OrderDto> collect = allWithItem.stream()
+                .map(order -> new OrderDto(order))
+                .collect(Collectors.toList());
+
+        return collect;
+    }
+
+
     @Data
     static class OrderDto
     {
