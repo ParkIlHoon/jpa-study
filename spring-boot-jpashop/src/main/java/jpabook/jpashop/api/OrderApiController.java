@@ -16,6 +16,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 권장 순서
+ * 1. 엔티티 조회 방식으로 우선 접근
+ *  1-1. 페치 조인으로 쿼리 수를 최적화
+ *  1-2. 컬렉션 최적화
+ *      1-2-1. 페이징 필요 : hibernate.default_batch_fetch_size 로 최적화
+ *      1-2-2. 페이징 불필요 : 페치 조인 사용
+ * 2. 엔티티 조회 방식으로 해결이 안되면 DTO 조회 방식 사용
+ * 3. DTO 조회 방식으로 해결이 안되면 NativeSQL 또는 스프링 JDBC Template 사용
+ */
 @RestController
 @RequiredArgsConstructor
 public class OrderApiController
@@ -76,6 +86,15 @@ public class OrderApiController
         return collect;
     }
 
+    /**
+     * V3에서 페이징 처리를 하기 위해서
+     * - 컬렉션은 페치 조인 시 페이징 불가능
+     * - xToOne 관계는 페치 조인으로 쿼리 수 최적화
+     * - 컬렉션은 페치 조인 대신에 지연 로딩을 유지하고, hibernate.default_batch_fetch_size 로 최적화
+     * @param offset
+     * @param limit
+     * @return
+     */
     @GetMapping("/api/v3.1/orders")
     public List<OrderDto> ordersV3_page(@RequestParam(value = "offset", defaultValue = "0") int offset,
                                         @RequestParam(value = "limit", defaultValue = "100") int limit)
@@ -88,18 +107,31 @@ public class OrderApiController
         return collect;
     }
 
+    /**
+     * DTO 로 바로 조회
+     * @return
+     */
     @GetMapping("/api/v4/orders")
     public List<OrderQueryDto> ordersV4()
     {
         return orderQueryRepository.findOrderQueryDtos();
     }
 
+    /**
+     * DTO 컬렉션 조회 최적화
+     * 일대다 관계인 컬렉션은 in 절을 활용해서 메모리에 미리 조회해서 최적화
+     * @return
+     */
     @GetMapping("/api/v5/orders")
     public List<OrderQueryDto> ordersV5()
     {
         return orderQueryRepository.findAllByDto_optimization();
     }
 
+    /**
+     * join 결과를 그대로 조회 후 애플리케이션에서 원하는 형태로 직접 변환
+     * @return
+     */
     @GetMapping("/api/v6/orders")
     public List<OrderFlatDto> ordersV6()
     {
