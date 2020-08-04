@@ -73,4 +73,21 @@ public class OrderQueryRepository
         Map<Long, List<OrderItemQueryDto>> orderItemMap = orderItems.stream().collect(Collectors.groupingBy(orderItemQueryDto -> orderItemQueryDto.getOrderId()));
         return orderItemMap;
     }
+
+    /**
+     * 쿼리는 1회 수행되지만, 조인으로 인해 db에서 애플리케이션에 전달하는 데이터에 중복 데이터가 추가되므로 상황에 따라 느려질 수 있음
+     * 페이징 불가능
+     * @return
+     */
+    public List<OrderFlatDto> findAllByDto_flat()
+    {
+        return entityManager.createQuery(
+                "select new " +
+                        "jpabook.jpashop.repository.order.query.OrderFlatDto(o.id, m.name, o.orderDate, o.status, d.address, i.name, oi.orderPrice, oi.count)" +
+                        " from Order o" +
+                        " join o.member m" +
+                        " join o.delivery d" +
+                        " join o.orderItems oi" +
+                        " join oi.item i", OrderFlatDto.class).getResultList();
+    }
 }
