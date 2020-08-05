@@ -84,13 +84,15 @@ public class MemberService
 	 */
 	public Member findOne(Long memberId)
 	{
-		return memberRepository.findOne(memberId);
+		return memberRepository.findById(memberId).get();
+//		return memberRepository.findOne(memberId);
 	}
 
 	@Transactional
 	public void update(Long id, String name, Address address)
 	{
-		Member member = memberRepository.findOne(id);
+		Member member = memberRepository.findById(id).get();
+//		Member member = memberRepository.findOne(id);
 
 		member.setName(name);
 		member.setAddress(address);
