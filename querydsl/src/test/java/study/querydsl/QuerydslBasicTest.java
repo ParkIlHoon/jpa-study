@@ -27,7 +27,7 @@ public class QuerydslBasicTest
     void before()
     {
         queryFactory = new JPAQueryFactory(entityManager);
-        
+
         Team teamA = new Team("teamA");
         Team teamB = new Team("teamB");
 
@@ -73,5 +73,36 @@ public class QuerydslBasicTest
                                         .fetchOne();
 
         assertThat(fetchOne.getUsername()).isEqualTo(memberName);
+    }
+
+    @Test
+    void 검색조건()
+    {
+        // member1 찾기
+        String memberName = "member1";
+        QMember member = QMember.member;
+
+        Member fetchOne = queryFactory.selectFrom(member)
+                                        .where(member.username.eq(memberName)
+                                                .and(member.age.eq(10)))
+                                        .fetchOne();
+
+        assertThat(fetchOne.getUsername()).isEqualTo(memberName);
+        assertThat(fetchOne.getAge()).isEqualTo(10);
+    }
+
+    @Test
+    void 검색조건_AND()
+    {
+        // member1 찾기
+        String memberName = "member1";
+        QMember member = QMember.member;
+
+        Member fetchOne = queryFactory.selectFrom(member)
+                .where(member.username.eq(memberName), (member.age.eq(10)))
+                .fetchOne();
+
+        assertThat(fetchOne.getUsername()).isEqualTo(memberName);
+        assertThat(fetchOne.getAge()).isEqualTo(10);
     }
 }
