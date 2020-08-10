@@ -14,6 +14,8 @@ import study.querydsl.entity.QTeam;
 import study.querydsl.entity.Team;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 
 import java.util.List;
 
@@ -324,5 +326,43 @@ public class QuerydslBasicTest
         {
             System.out.println("tuple : " + tuple);
         }
+    }
+
+    @PersistenceUnit
+    EntityManagerFactory entityManagerFactory;
+
+    @Test
+    void 페치조인_NO()
+    {
+        entityManager.flush();
+        entityManager.clear();
+
+        QTeam team = QTeam.team;
+        QMember member = QMember.member;
+
+        Member member1 = queryFactory.selectFrom(member)
+                                        .where(member.username.eq("member1"))
+                                        .fetchOne();
+
+        boolean isLoaded = entityManagerFactory.getPersistenceUnitUtil().isLoaded(member1.getTeam());
+        assertThat(isLoaded).isFalse();
+    }
+
+    @Test
+    void 페치조인()
+    {
+        entityManager.flush();
+        entityManager.clear();
+
+        QTeam team = QTeam.team;
+        QMember member = QMember.member;
+
+        Member member1 = queryFactory.selectFrom(member)
+                                        .join(member.team, team).fetchJoin()
+                                        .where(member.username.eq("member1"))
+                                        .fetchOne();
+
+        boolean isLoaded = entityManagerFactory.getPersistenceUnitUtil().isLoaded(member1.getTeam());
+        assertThat(isLoaded).isTrue();
     }
 }
