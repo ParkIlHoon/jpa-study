@@ -283,4 +283,46 @@ public class QuerydslBasicTest
                 .extracting("username")
                 .containsExactly("teamA", "teamB");
     }
+
+    /**
+     * 회원과 팀을 조인하면서, 팀 이름이 teamA 인 팀만 조인, 회원은 모두 조회
+     */
+    @Test
+    void 조인_ON절()
+    {
+        QTeam team = QTeam.team;
+        QMember member = QMember.member;
+
+        List<Tuple> memberList = queryFactory.select(member, team)
+                                                .from(member)
+                                                .leftJoin(member.team, team)
+                                                    .on(team.name.eq("teamA"))
+                                                .fetch();
+
+        for(Tuple tuple : memberList)
+        {
+            System.out.println("tuple : " + tuple);
+        }
+    }
+
+    @Test
+    void 연관관계_없는_외부조인()
+    {
+        entityManager.persist(new Member("teamA"));
+        entityManager.persist(new Member("teamB"));
+        entityManager.persist(new Member("teamC"));
+
+        QTeam team = QTeam.team;
+        QMember member = QMember.member;
+
+        List<Tuple> members = queryFactory.select(member, team)
+                                            .from(member)
+                                            .leftJoin(team).on(member.username.eq(team.name))
+                                            .fetch();
+
+        for(Tuple tuple : members)
+        {
+            System.out.println("tuple : " + tuple);
+        }
+    }
 }
