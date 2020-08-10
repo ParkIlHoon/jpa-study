@@ -244,4 +244,43 @@ public class QuerydslBasicTest
         assertThat(tuple2.get(team.name)).isEqualTo("teamB");
         assertThat(tuple2.get(member.age.avg())).isEqualTo(35);
     }
+
+    /**
+     * teamA 에 소속된 모든 회원 조회
+     */
+    @Test
+    void 기본조인()
+    {
+        QTeam team = QTeam.team;
+        QMember member = QMember.member;
+
+        List<Member> teamA = queryFactory.selectFrom(member)
+                                            .leftJoin(member.team, team)
+                                            .where(team.name.eq("teamA"))
+                                            .fetch();
+
+        assertThat(teamA)
+                .extracting("username")
+                .containsExactly("member1", "member2");
+    }
+
+    @Test
+    void 세타조인()
+    {
+        entityManager.persist(new Member("teamA"));
+        entityManager.persist(new Member("teamB"));
+        entityManager.persist(new Member("teamC"));
+
+        QTeam team = QTeam.team;
+        QMember member = QMember.member;
+
+        List<Member> members = queryFactory.select(member)
+                                            .from(member, team)
+                                            .where(member.username.eq(team.name))
+                                            .fetch();
+
+        assertThat(members)
+                .extracting("username")
+                .containsExactly("teamA", "teamB");
+    }
 }
