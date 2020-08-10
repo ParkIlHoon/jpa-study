@@ -132,4 +132,63 @@ public class QuerydslBasicTest
                                         .fetchCount();
 
     }
+
+    /**
+     * 1. 회원 나이 내림차순
+     * 2. 회원 이름 오름치순
+     * 단, 2에서 회원 이름이 없으면 마지막에 출력
+     */
+    @Test
+    void 정렬()
+    {
+        entityManager.persist(new Member(null, 100));
+        entityManager.persist(new Member("member5", 100));
+        entityManager.persist(new Member("member6", 100));
+
+        QMember member = QMember.member;
+
+        List<Member> memberList = queryFactory.selectFrom(member)
+                                                .where(member.age.eq(100))
+                                                .orderBy(member.age.desc(), member.username.asc().nullsLast())
+                                                .fetch();
+
+        Member member5 = memberList.get(0);
+        Member member6 = memberList.get(1);
+        Member memberNull = memberList.get(2);
+
+        assertThat(member5.getUsername()).isEqualTo("member5");
+        assertThat(member6.getUsername()).isEqualTo("member6");
+        assertThat(memberNull.getUsername()).isNull();
+    }
+
+    @Test
+    void 페이징()
+    {
+        QMember member = QMember.member;
+
+        List<Member> memberList = queryFactory.selectFrom(member)
+                                                .orderBy(member.username.desc())
+                                                .offset(1)
+                                                .limit(2)
+                                                .fetch();
+
+        assertThat(memberList.size()).isEqualTo(2);
+    }
+
+    @Test
+    void 페이징_전체수()
+    {
+        QMember member = QMember.member;
+
+        QueryResults<Member> memberQueryResults = queryFactory.selectFrom(member)
+                                                                .orderBy(member.username.desc())
+                                                                .offset(1)
+                                                                .limit(2)
+                                                                .fetchResults();
+
+        assertThat(memberQueryResults.getTotal()).isEqualTo(4);
+        assertThat(memberQueryResults.getLimit()).isEqualTo(2);
+        assertThat(memberQueryResults.getOffset()).isEqualTo(1);
+        assertThat(memberQueryResults.getResults().size()).isEqualTo(2);
+    }
 }
