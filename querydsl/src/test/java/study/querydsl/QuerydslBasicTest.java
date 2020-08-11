@@ -3,6 +3,7 @@ package study.querydsl;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -467,6 +468,7 @@ public class QuerydslBasicTest
             System.out.println(data);
         }
     }
+
     @Test
     void CASE문_복잡()
     {
@@ -481,6 +483,39 @@ public class QuerydslBasicTest
                                             .fetch();
 
         for(String data : fetch)
+        {
+            System.out.println(data);
+        }
+    }
+
+    @Test
+    void 상수처리()
+    {
+        QMember member = QMember.member;
+
+        List<Tuple> tuples = queryFactory.select(
+                                                member.username,
+                                                Expressions.constant("A")
+                                                )
+                                            .from(member)
+                                            .fetch();
+
+        for (Tuple tuple : tuples)
+        {
+            System.out.println(tuple);
+        }
+    }
+
+    @Test
+    void 문자_더하기()
+    {
+        QMember member = QMember.member;
+
+        List<String> fetch = queryFactory.select(member.username.concat("_").concat(member.age.stringValue()))
+                                            .from(member)
+                                            .fetch();
+
+        for (String data : fetch)
         {
             System.out.println(data);
         }
