@@ -1,12 +1,17 @@
 package study.querydsl;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import study.querydsl.dto.MemberDto;
+import study.querydsl.dto.UserDto;
 import study.querydsl.entity.Member;
 import study.querydsl.entity.QMember;
 import study.querydsl.entity.Team;
@@ -73,6 +78,112 @@ public class QuerydslDeeperTest
         {
             System.out.println("username : " + tuple.get(member.username));
             System.out.println("age : " + tuple.get(member.age));
+        }
+    }
+
+    @Test
+    void dto_projection_setter()
+    {
+        List<MemberDto> memberDtoList = queryFactory
+                                            .select(
+                                                    Projections.bean(MemberDto.class,
+                                                                    member.username,
+                                                                    member.age)
+                                                    )
+                                            .from(member)
+                                            .fetch();
+
+        for (MemberDto memberDto : memberDtoList)
+        {
+            System.out.println(memberDto);
+        }
+    }
+
+    /**
+     * Getter, Setter 가 없어도 가능
+     */
+    @Test
+    void dto_projection_field()
+    {
+        List<MemberDto> memberDtoList = queryFactory
+                                            .select(
+                                                    Projections.fields(MemberDto.class,
+                                                                    member.username,
+                                                                    member.age)
+                                                    )
+                                            .from(member)
+                                            .fetch();
+
+        for (MemberDto memberDto : memberDtoList)
+        {
+            System.out.println(memberDto);
+        }
+    }
+
+    /**
+     * 생성자 이용 방식.
+     * 생성자의 파라미터와 타입이 일치해야함
+     */
+    @Test
+    void dto_projection_constructor()
+    {
+        List<MemberDto> memberDtoList = queryFactory
+                                            .select(
+                                                    Projections.constructor(MemberDto.class,
+                                                                    member.username,
+                                                                    member.age)
+                                                    )
+                                            .from(member)
+                                            .fetch();
+
+        for (MemberDto memberDto : memberDtoList)
+        {
+            System.out.println(memberDto);
+        }
+    }
+
+    /**
+     * 다른 DTO로 바로 조회하기.
+     * 필드명이 다르면 null 값이 들어가므로 별도 처리 필요
+     */
+    @Test
+    void dto_projection_otherDto_field()
+    {
+        QMember qMember = new QMember("sub");
+
+        List<UserDto> userDtoList = queryFactory
+                                        .select(
+                                                Projections.fields(UserDto.class,
+                                                        member.username.as("name"),
+                                                        ExpressionUtils.as(JPAExpressions.select(qMember.age.max())
+                                                                                            .from(qMember), "age"))
+                                                )
+                                        .from(member)
+                                        .fetch();
+
+        for (UserDto userDto : userDtoList)
+        {
+            System.out.println(userDto);
+        }
+    }
+
+    @Test
+    void dto_projection_otherDto_constructor()
+    {
+        QMember qMember = new QMember("sub");
+
+        List<UserDto> userDtoList = queryFactory
+                                        .select(
+                                                Projections.constructor(UserDto.class,
+                                                        member.username,
+                                                        member.age)
+                                                )
+                                        .from(member)
+                                        .fetch();
+
+        for (UserDto userDto : userDtoList)
+        {
+            System.out.println(userDto);
         }
     }
 }
