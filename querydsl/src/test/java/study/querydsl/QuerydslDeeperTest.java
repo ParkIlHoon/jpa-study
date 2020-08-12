@@ -1,7 +1,9 @@
 package study.querydsl;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import study.querydsl.dto.MemberDto;
+import study.querydsl.dto.QMemberDto;
 import study.querydsl.dto.UserDto;
 import study.querydsl.entity.Member;
 import study.querydsl.entity.QMember;
@@ -20,6 +23,7 @@ import javax.persistence.EntityManager;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static study.querydsl.entity.QMember.member;
 
@@ -185,5 +189,80 @@ public class QuerydslDeeperTest
         {
             System.out.println(userDto);
         }
+    }
+
+    /**
+     * Dto 의 생성자에 @Projection 어노테이션을 붙여 사용하는 방법
+     * 생성자 방식은 런타임시에만 오류 감지가 가능하나, 이 방식은 코딩 중에 오류 감지 가능
+     * BUT,
+     */
+    @Test
+    void queryProjection()
+    {
+        List<MemberDto> memberDtoList = queryFactory.select(new QMemberDto(member.username, member.age))
+                                                    .from(member)
+                                                    .fetch();
+
+        for (MemberDto dto : memberDtoList)
+        {
+            System.out.println(dto);
+        }
+    }
+
+
+    @Test
+    void dynamicQuery_booleanBuilder()
+    {
+        String usernameParam  = "member1";
+        int ageParam = 10;
+
+        List<Member> result = searchMember1(usernameParam, ageParam);
+        assertThat(result.size()).isEqualTo(1);
+    }
+
+    private List<Member> searchMember1(String usernameParam, Integer ageParam)
+    {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        if (usernameParam != null)
+        {
+            booleanBuilder.and(member.username.eq(usernameParam));
+        }
+        if (ageParam != null)
+        {
+            booleanBuilder.and(member.age.eq(ageParam));
+        }
+
+        return queryFactory.selectFrom(member)
+                            .where(booleanBuilder)
+                            .fetch();
+    }
+
+
+    @Test
+    void dynamicQuery_whereParam()
+    {
+        String usernameParam  = "member1";
+        int ageParam = 10;
+
+        List<Member> result = searchMember2(usernameParam, ageParam);
+        assertThat(result.size()).isEqualTo(1);
+    }
+
+    private List<Member> searchMember2(String usernameParam, Integer ageParam)
+    {
+        return queryFactory.selectFrom(member)
+                            .where(usernameEq(usernameParam), ageEq(ageParam))
+                            .fetch();
+    }
+
+    private Predicate usernameEq(String usernameParam)
+    {
+        return usernameParam != null ? member.username.eq(usernameParam) : null;
+    }
+
+    private Predicate ageEq(Integer ageParam)
+    {
+        return ageParam != null ? member.age.eq(ageParam) : null;
     }
 }
