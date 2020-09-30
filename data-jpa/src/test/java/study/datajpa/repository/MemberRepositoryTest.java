@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +26,9 @@ class MemberRepositoryTest
 {
     @Autowired
     private MemberRepository memberRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Test
     void memberTest()
@@ -132,5 +137,26 @@ class MemberRepositoryTest
 //        assertThat(byAge.getTotalPages()).isEqualTo(3);
         assertThat(byAge.isFirst()).isTrue();
         assertThat(byAge.hasNext()).isTrue();
+    }
+
+    @Test
+    void bulkUpdate()
+    {
+        memberRepository.save(new Member("member1", 10, null));
+        memberRepository.save(new Member("member2", 10, null));
+        memberRepository.save(new Member("member3", 10, null));
+        memberRepository.save(new Member("member4", 10, null));
+        memberRepository.save(new Member("member5", 20, null));
+        memberRepository.save(new Member("member6", 20, null));
+        memberRepository.save(new Member("member7", 20, null));
+
+        int agePlus = memberRepository.bulkAgePlus(10);
+
+        // bulk 연산 이후에 같은 트랜잭션에서 추가 로직이 존재하는 경우에는 영속성 컨텍스트를 초기화 해줘야한다.
+        entityManager.flush();
+        entityManager.clear();
+        // 또는 @Modifying 어노테이션의 clearAutomatically = true 설정을 해야한다.
+
+        assertThat(agePlus).isEqualTo(4);
     }
 }
