@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
+import study.datajpa.entity.Team;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,6 +27,8 @@ class MemberRepositoryTest
 {
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private TeamRepository teamRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -158,5 +161,33 @@ class MemberRepositoryTest
         // 또는 @Modifying 어노테이션의 clearAutomatically = true 설정을 해야한다.
 
         assertThat(agePlus).isEqualTo(4);
+    }
+
+    @Test
+    void findMemberLazy()
+    {
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamB);
+
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        List<Member> all = memberRepository.findAll();
+//        List<Member> all = memberRepository.findMemberFetchJoin();
+
+        for (Member member : all)
+        {
+            System.out.println("member = " + member.getUsername());
+            System.out.println("team = " + member.getTeam().getName());
+        }
     }
 }
